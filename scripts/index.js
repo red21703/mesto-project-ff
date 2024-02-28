@@ -11,6 +11,7 @@ function createCard(value, delFunction) {
 
   cardTitle.textContent = value.name; // Set card's title
   cardImage.src = value.link; // Set card's image src
+  cardImage.alt = value.name; // Set card's image alt
 
   const delButton = card.querySelector('.card__delete-button');
   delButton.addEventListener('click', delFunction);    
@@ -19,7 +20,7 @@ function createCard(value, delFunction) {
 }
 
 // @todo: Функция удаления карточки
-const delCard = e => e.target.parentElement.remove();     
+const delCard = evt => evt.target.closest('li').remove();    
 
 // @todo: Вывести карточки на страницу
 initialCards.forEach((data) => {
