@@ -14,16 +14,16 @@ function createCard(value, delFunction) {
   cardImage.alt = value.name; // Set card's image alt
 
   const delButton = card.querySelector('.card__delete-button');
-  delButton.addEventListener('click', delFunction);    
+  delButton.addEventListener('click', () => delItemFunction(card));      
 
   return card;
 }
 
 // @todo: Функция удаления карточки
-const delCard = evt => evt.target.closest('li').remove();    
+const delItemFunction = (item) => item.remove();    
 
 // @todo: Вывести карточки на страницу
 initialCards.forEach((data) => {
-  const card = createCard(data, delCard);
+  const card = createCard(data, delItemFunction);
   cardsContainer.append(card); 
 });
