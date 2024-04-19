@@ -1,48 +1,40 @@
-var popupContainer = '';
+let popupContainer = '';
 
 export function closeModal (element){
-  //element.style.display = 'none';
   element.classList.remove('popup_is-opened');
+  removeClickToCloseListener ();
+  removeEscapeToCloseListener ();
 };
 
 export function openModal (element){
-  //element.style.display = 'flex';
   element.classList.add('popup_is-opened');
+  addEscapeToCloseListener();
+  addClickToCloseListener();
+  popupContainer = element;
 }
 
-export function addEscapeToCloseListener (element){
-  popupContainer = element;
-  document.addEventListener('keydown', listenkey);
+function addEscapeToCloseListener (){
+  document.addEventListener('keydown', listenKey);
 };
-export function addClickToCloseListener (element){
-  popupContainer = element;
-  document.addEventListener('click', listenclick);
+function addClickToCloseListener (){
+  document.addEventListener('click', listenClick);
 };
 
-export function removeEscapeToCloseListener (){
-  document.removeEventListener('keydown', listenkey);
+function removeEscapeToCloseListener (){
+  document.removeEventListener('keydown', listenKey);
 };
-export function removeClickToCloseListener (){
-  document.removeEventListener('click', listenclick);
+function removeClickToCloseListener (){
+  document.removeEventListener('click', listenClick);
 };
 
-
-
-function listenkey (evt) {
+function listenKey (evt) {
   if (evt.key == 'Escape') {
-    document.removeEventListener('keydown', listenkey);
-    console.log('111');
-    removeClickToCloseListener ();
-    removeEscapeToCloseListener ();
     closeModal (popupContainer);
   }
 };
 
-function listenclick (evt) {
-    if (evt.target.className.split(' ').includes('popup')) {
-      console.log("success");
-      removeClickToCloseListener ();
-      removeEscapeToCloseListener ();
+function listenClick (evt) {
+    if (evt.target.classList.contains('popup')) {
       closeModal (popupContainer);
     };
 };

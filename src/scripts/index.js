@@ -1,7 +1,7 @@
 import '../pages/index.css';
 import initialCards from './cards.js';
-import { openModal, closeModal, addEscapeToCloseListener, removeEscapeToCloseListener, addClickToCloseListener, removeClickToCloseListener} from './modal.js';
-import { createCard, delItemFunction, likeFunction, showFunction} from './card.js';
+import { openModal, closeModal} from './modal.js';
+import { createCard, delItemFunction, likeFunction} from './card.js';
 
 //********* //
 // Sprint 5 //
@@ -10,7 +10,7 @@ import { createCard, delItemFunction, likeFunction, showFunction} from './card.j
 const cardsContainer = document.querySelector('.places__list'); // Select cards' container in HTML
 // @todo: Вывести карточки на страницу
 initialCards.forEach((data) => {
-  const card = createCard(data, delItemFunction, likeFunction, showFunction);
+  const card = createCard(data, delItemFunction, likeFunction);
   cardsContainer.append(card); 
 });
 
@@ -20,114 +20,91 @@ initialCards.forEach((data) => {
 
 //****           Profile editing                      ***** //
 const editProfileButton = document.querySelector('.profile__edit-button');
-const popupEditContent = document.querySelector('.popup_type_edit');
-// function to handel closing the popup
-function EditProfileHandler (element) {
-  const popupcloseButton = element.querySelector('.popup__close');
+const popupEditProfileContent = document.querySelector('.popup_type_edit');
+const popupEditProfileCloseButton = document.forms['edit-profile'].parentElement.querySelector('.popup__close');
+const popupEditProfileForm = document.forms['edit-profile'];
+const popupEditProfileFormName = document.forms['edit-profile'].elements.name;
+const popupEditProfileFormDescriotion = document.forms['edit-profile'].elements.description;
 
-  addEscapeToCloseListener(element);
-  addClickToCloseListener(element);
-  popupcloseButton.addEventListener('click', () => {
-    closeModal(element);
-    removeClickToCloseListener ();
-    removeEscapeToCloseListener ();
-    setProfilePopup();
-  });
-
-  // Submit form Edit profile for API, useing template from practicum
-  // Находим форму в DOM
-  const formElement = element.querySelector('.popup__form');// Воспользуйтесь методом querySelector()
-  // Находим поля формы в DOM
-  const nameInput = formElement.querySelector('.popup__input_type_name');// Воспользуйтесь инструментом .querySelector()
-  const jobInput = formElement.querySelector('.popup__input_type_description');// Воспользуйтесь инструментом .querySelector()
-  // Обработчик «отправки» формы, хотя пока
-  // она никуда отправляться не будет
-  function handleFormSubmit(evt) {
-      evt.preventDefault(); // Эта строчка отменяет стандартную отправку формы.
-                                                  // Так мы можем определить свою логику отправки.
-                                                  // О том, как это делать, расскажем позже.
-
-      // Получите значение полей jobInput и nameInput из свойства value
-      const nameInputValue = nameInput.value;
-      const jobInputValue = jobInput.value;
-      // Выберите элементы, куда должны быть вставлены значения полей
-      const profileTitle = document.querySelector('.profile__title');
-      const profileDescription = document.querySelector('.profile__description');
-      // Вставьте новые значения с помощью textContent
-      profileTitle.textContent = nameInputValue;
-      profileDescription.textContent = jobInputValue;
-      // close popup
-      closeModal(element);
-      document.removeEventListener('keydown', listenkey);
-  }
-  // Прикрепляем обработчик к форме:
-  // он будет следить за событием “submit” - «отправка»
-  formElement.addEventListener('submit', handleFormSubmit);  
-};
-// function to fill fielsd in form from web page
-function setProfilePopup (){
+// function to fill fields in form from web page
+function setDataFromPageToPopup (){
   const profileTitle = document.querySelector('.profile__title').textContent;
   const profileDescription = document.querySelector('.profile__description').textContent;
   const editElements = document.forms['edit-profile'].elements;
   editElements.name.value = profileTitle;
   editElements.description.value = profileDescription;
 }
-// add listener to Profile buttons
+// add listener to edit Profile button
 editProfileButton.addEventListener('click', () => {
-  openModal(popupEditContent);
-  EditProfileHandler(popupEditContent);
+  setDataFromPageToPopup();
+  openModal(popupEditProfileContent)
 });
-// Set popup default fields in form
-setProfilePopup();
+
+// Add listener to close for edit Profile popup
+popupEditProfileCloseButton.addEventListener('click', () => closeModal(popupEditProfileContent));
+
+// Add listener to submit for edit Profile popup
+popupEditProfileForm.addEventListener('submit', handleEditFormSubmit); 
+
+function handleEditFormSubmit(evt) {
+      evt.preventDefault();
+      // Выберите элементы, куда должны быть вставлены значения полей
+      const profileTitle = document.querySelector('.profile__title');
+      const profileDescription = document.querySelector('.profile__description');
+      // Вставьте новые значения с помощью textContent
+      profileTitle.textContent = popupEditProfileFormName.value;
+      profileDescription.textContent = popupEditProfileFormDescriotion.value;
+      // close popup
+      closeModal(popupEditProfileContent);
+}
 
 
-
-
-//****             Add Card                       ***** //
+//****             Add New Card                    ***** //
 const addButton = document.querySelector('.profile__add-button');
 const popupAddCard = document.querySelector('.popup_type_new-card');
-//closing add card 
-function AddCardHandler(element) { //
-  const popupcloseButton = element.querySelector('.popup__close');
-  addEscapeToCloseListener(element);
-  addClickToCloseListener(element);
-  popupcloseButton.addEventListener('click', () => {
-    closeModal(element);
-    removeClickToCloseListener ();
-    removeEscapeToCloseListener ();
-  });
+const popupAddCardForm = document.forms['new-place'];
+const popupAddCardCloseButton = document.forms['new-place'].parentElement.querySelector('.popup__close');
+const popupAddCardInputPlaceName = document.forms['new-place'].elements['place-name'];
+const popupAddCardInputNameLink = document.forms['new-place'].elements.link;
 
-
-  // Находим форму в DOM
-  const formElement = element.querySelector('.popup__form');// Воспользуйтесь методом querySelector()
-  // Находим поля формы в DOM
-  const CardNameInput = formElement.querySelector('.popup__input_type_card-name');// Воспользуйтесь инструментом .querySelector()
-  const URLInput = formElement.querySelector('.popup__input_type_url');// Воспользуйтесь инструментом .querySelector()
-  // Обработчик «отправки» формы, хотя пока
-  // она никуда отправляться не будет
-  function handleFormCardSubmit(evt) {
-      evt.preventDefault(); // Эта строчка отменяет стандартную отправку формы.
-                                                  // Так мы можем определить свою логику отправки.
-                                                  // О том, как это делать, расскажем позже.
-      const NewCard = {
-          name: CardNameInput.value,
-          link: URLInput.value,
-        };
-      const card = createCard(NewCard, delItemFunction, likeFunction);
-      const theFirstChild = cardsContainer.firstChild;
-      cardsContainer.insertBefore(card, theFirstChild);
-      // close popup
-      CardNameInput.value = '';
-      URLInput.value = '';
-      closeModal(element);
-      formElement.removeEventListener('submit', handleFormCardSubmit);
-  }
-  // Прикрепляем обработчик к форме:
-  // он будет следить за событием “submit” - «отправка»
-  formElement.addEventListener('submit', handleFormCardSubmit);  
-};
 // add listener to Add new card button
-addButton.addEventListener('click', () => {
-  openModal(popupAddCard);
-  AddCardHandler(popupAddCard);
-});
+addButton.addEventListener('click', () => openModal(popupAddCard));
+
+// Add listener to close for Add new card popup
+popupAddCardCloseButton.addEventListener('click', () => closeModal(popupAddCard));
+
+// Add listener to submit for Add new card popup
+popupAddCardForm.addEventListener('submit', handleAddCardFormSubmit);
+
+function handleAddCardFormSubmit(evt) {
+  evt.preventDefault();
+  const NewCard = {
+    name: popupAddCardInputPlaceName.value,
+    link: popupAddCardInputNameLink.value,
+  };
+  const card = createCard(NewCard, delItemFunction, likeFunction);
+  cardsContainer.prepend(card);
+  // close popup
+  closeModal(popupAddCard);
+  popupAddCardForm.reset();
+};
+
+
+//****             Show Card                       ***** //
+const popupImageContent = document.querySelector('.popup_type_image');
+const popupImageContentCloseButton = popupImageContent.querySelector('.popup__close');
+export const showCardImageFunction = (card) =>  {
+  const popupImageElement = document.querySelector('.popup__image');
+  const popupImageDescription = document.querySelector('.popup__caption');
+
+  const ImageSrc = card.querySelector('.card__image').getAttribute('src');
+  const ImageDescription = card.querySelector('.card__title').textContent;
+  
+  popupImageElement.src = ImageSrc; // Set card's image src
+  popupImageElement.alt = popupImageDescription.textContent = ImageDescription; // Set card's image alt
+
+  openModal(popupImageContent);
+};
+
+// Add listener to close for Add new card popup
+popupImageContentCloseButton.addEventListener('click', () => closeModal(popupImageContent));
