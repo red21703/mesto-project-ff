@@ -10,7 +10,7 @@ import { createCard, delItemFunction, likeFunction} from './card.js';
 const cardsContainer = document.querySelector('.places__list'); // Select cards' container in HTML
 // @todo: Вывести карточки на страницу
 initialCards.forEach((data) => {
-  const card = createCard(data, delItemFunction, likeFunction);
+  const card = createCard(data, delItemFunction, likeFunction, showCardImageFunction);
   cardsContainer.append(card); 
 });
 
@@ -78,33 +78,31 @@ popupAddCardForm.addEventListener('submit', handleAddCardFormSubmit);
 
 function handleAddCardFormSubmit(evt) {
   evt.preventDefault();
-  const NewCard = {
+  const newCard = {
     name: popupAddCardInputPlaceName.value,
     link: popupAddCardInputNameLink.value,
   };
-  const card = createCard(NewCard, delItemFunction, likeFunction);
+  const card = createCard(newCard, delItemFunction, likeFunction, showCardImageFunction);
   cardsContainer.prepend(card);
   // close popup
   closeModal(popupAddCard);
   popupAddCardForm.reset();
 };
 
-
 //****             Show Card                       ***** //
 const popupImageContent = document.querySelector('.popup_type_image');
 const popupImageContentCloseButton = popupImageContent.querySelector('.popup__close');
-export const showCardImageFunction = (card) =>  {
+function showCardImageFunction(card){
   const popupImageElement = document.querySelector('.popup__image');
-  const popupImageDescription = document.querySelector('.popup__caption');
+  const popupimageDescription = document.querySelector('.popup__caption');
 
-  const ImageSrc = card.querySelector('.card__image').getAttribute('src');
-  const ImageDescription = card.querySelector('.card__title').textContent;
+  const imageSrc = card.querySelector('.card__image').getAttribute('src');
+  const imageDescription = card.querySelector('.card__title').textContent;
   
-  popupImageElement.src = ImageSrc; // Set card's image src
-  popupImageElement.alt = popupImageDescription.textContent = ImageDescription; // Set card's image alt
+  popupImageElement.src = imageSrc; // Set card's image src
+  popupImageElement.alt = popupimageDescription.textContent = imageDescription; // Set card's image alt
 
   openModal(popupImageContent);
 };
-
 // Add listener to close for Add new card popup
 popupImageContentCloseButton.addEventListener('click', () => closeModal(popupImageContent));

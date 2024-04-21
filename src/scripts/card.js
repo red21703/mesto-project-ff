@@ -1,9 +1,8 @@
-import { showCardImageFunction } from './index.js';
 // @todo: Темплейт карточки
 const cardsTemplate = document.querySelector('#card-template').content; // Add template
 
 // @todo: Функция создания карточки
-export function createCard(value, delItemFunction, likeFunction) {
+export function createCard(value, delItemFunction, likeFunction, showCardImageFunction) {
   const card = cardsTemplate.querySelector('.places__item').cloneNode(true); // Create card
   const cardTitle = card.querySelector('.card__description .card__title'); // Select card's title
   const cardImage = card.querySelector('.card__image'); // Select card's image
