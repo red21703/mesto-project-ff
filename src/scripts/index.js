@@ -94,13 +94,13 @@ const popupImageContent = document.querySelector('.popup_type_image');
 const popupImageContentCloseButton = popupImageContent.querySelector('.popup__close');
 function showCardImageFunction(card){
   const popupImageElement = document.querySelector('.popup__image');
-  const popupimageDescription = document.querySelector('.popup__caption');
+  const popupImageDescription = document.querySelector('.popup__caption');
 
   const imageSrc = card.querySelector('.card__image').getAttribute('src');
   const imageDescription = card.querySelector('.card__title').textContent;
   
   popupImageElement.src = imageSrc; // Set card's image src
-  popupImageElement.alt = popupimageDescription.textContent = imageDescription; // Set card's image alt
+  popupImageElement.alt = popupImageDescription.textContent = imageDescription; // Set card's image alt
 
   openModal(popupImageContent);
 };
