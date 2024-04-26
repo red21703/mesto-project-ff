@@ -11,6 +11,7 @@ export function openModal (element){
   addEscapeToCloseListener();
   addClickToCloseListener();
   popupContainer = element;
+  console.log(popupContainer);
 }
 
 function addEscapeToCloseListener (){

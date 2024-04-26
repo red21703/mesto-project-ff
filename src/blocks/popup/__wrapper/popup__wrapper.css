@@ -1,0 +1,9 @@
+.popup__wrapper{
+  display: flex; 
+  flex-direction: column; 
+  position: relative;
+}
+
+.popup__wrapper:not(:last-of-type){
+  padding-bottom: 15px; /* for 2 rows error message*/
+}
