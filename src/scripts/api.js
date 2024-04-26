@@ -12,24 +12,14 @@ export const getInitialCards = () => {
   return fetch(`${config.baseUrl}/cards`, {
     headers: config.headers
   })
-    .then(res => {
-      if (res.ok) {
-        return res.json();
-      }
-      return Promise.reject(`Error: ${res.status}`);
-    });
+    .then(res => handleResponse(res));
 };
 
 export const getMyProfile = () => {
   return fetch(`${config.baseUrl}/users/me`, {
     headers: config.headers
   })
-    .then(res => {
-      if (res.ok) {
-        return res.json();
-      }
-      return Promise.reject(`Error: ${res.status}`);
-    });
+    .then(res => handleResponse(res));
 };
 
 export const updateMyProfileText = (data) => {
@@ -41,12 +31,7 @@ export const updateMyProfileText = (data) => {
       about: data.about
     })
   })
-    .then(res => {
-      if (res.ok) {
-        return res.json();
-      }
-      return Promise.reject(`Error: ${res.status}`);
-    });
+    .then(res => handleResponse(res));
 };
 
 export const updateMyProfileAvatar = (link) => {
@@ -57,12 +42,7 @@ export const updateMyProfileAvatar = (link) => {
       avatar: link,
     })
   })
-    .then(res => {
-      if (res.ok) {
-        return res.json();
-      }
-      return Promise.reject(`Error: ${res.status}`);
-    });
+    .then(res => handleResponse(res));
 };
 
 export const createNewCard = (data) => {
@@ -74,12 +54,7 @@ export const createNewCard = (data) => {
       link: data.link
     })
   })
-    .then(res => {
-      if (res.ok) {
-        return res.json();
-      }
-      return Promise.reject(`Error: ${res.status}`);
-    });
+    .then(res => handleResponse(res));
 };
 
 export const deleteMyCard = (cardID) => {
@@ -87,12 +62,7 @@ export const deleteMyCard = (cardID) => {
     method: 'DELETE',
     headers: config.headers,
   })
-    .then(res => {
-      if (res.ok) {
-        return res.json();
-      }
-      return Promise.reject(`Error: ${res.status}`);
-    });
+    .then(res => handleResponse(res));
 };
 
 export const setLike = (cardID) => {
@@ -100,12 +70,7 @@ export const setLike = (cardID) => {
     method: 'PUT',
     headers: config.headers
   })
-    .then(res => {
-      if (res.ok) {
-        return res.json();
-      }
-      return Promise.reject(`Error: ${res.status}`);
-    });
+    .then(res => handleResponse(res));
 };
 
 export const deleteLike = (cardID) => {
@@ -113,10 +78,12 @@ export const deleteLike = (cardID) => {
     method: 'DELETE',
     headers: config.headers,
   })
-    .then(res => {
-      if (res.ok) {
-        return res.json();
-      }
-      return Promise.reject(`Error: ${res.status}`);
-    });
+    .then(res => handleResponse(res));
 };
+
+function handleResponse(res) {
+  if (res.ok) {
+    return res.json();
+  }
+  return Promise.reject(`Error: ${res.status}`);
+}

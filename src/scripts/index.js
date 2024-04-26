@@ -27,7 +27,6 @@ function profileEdit() {
   const popupEditProfileFormName = document.forms['edit-profile'].elements.name;
   const popupEditProfileFormDescriotion = document.forms['edit-profile'].elements.description;
   const popupEditProfileSubmitButton = popupEditProfileForm.save;
-  console.log(popupEditProfileSubmitButton);
   // function to fill fields in form from web page
   function setDataFromPageToPopup (){
     const profileTitle = document.querySelector('.profile__title').textContent;
@@ -52,25 +51,23 @@ function profileEdit() {
   function handleEditFormSubmit(evt) {
         evt.preventDefault();
         // change save button text
-        let initialButtonText = popupEditProfileSubmitButton.textContent;
+        const initialButtonText = popupEditProfileSubmitButton.textContent;
         popupEditProfileSubmitButton.textContent = textForButtonWhileSaving;
         // Выберите элементы, куда должны быть вставлены значения полей
         let profileData = {
           name: popupEditProfileFormName.value,
           about: popupEditProfileFormDescriotion.value
         }
-        //changeProfileTextOnServer(profileData);
         updateMyProfileText(profileData)
           .then((result) => {
           setMyProfileFromServer(result);
           // close popup
           closeModal(popupEditProfileContent);
-          popupEditProfileSubmitButton.textContent = initialButtonText;
           })
         .catch((err) => {
           console.log(err);
-        });
-
+        })
+        .finally(() => popupEditProfileSubmitButton.textContent = initialButtonText);
   }
 }
 profileEdit();
@@ -96,7 +93,7 @@ function addNewCard(){
   function handleAddCardFormSubmit(evt) {
     evt.preventDefault();
     // textForButtonWhileSaving
-    let initialButtonText = popupAddCardSubmitButton.textContent;
+    const initialButtonText = popupAddCardSubmitButton.textContent;
     popupAddCardSubmitButton.textContent = textForButtonWhileSaving;
     const newCard = {
       name: popupAddCardInputPlaceName.value,
@@ -104,17 +101,17 @@ function addNewCard(){
     };
     createNewCard(newCard)
     .then((result) => {
-      const card = createCard(result, delItemFunction, likeFunction, showCardImageFunction);
+      const card = createCard(result, delItemFunction, likeFunction, showCardImageFunction, result.owner._id);
       cardsContainer.prepend(card);
       // close popup
       closeModal(popupAddCard);
-      popupAddCardSubmitButton.textContent = initialButtonText;
       popupAddCardForm.reset();
       clearValidation(popupAddCardForm, configObject);
     })
     .catch((err) => {
       console.log(err);
-    });
+    })
+    .finally(() => popupAddCardSubmitButton.textContent = initialButtonText);
   };
 
 }
@@ -141,7 +138,7 @@ popupImageContentCloseButton.addEventListener('click', () => closeModal(popupIma
 //********************** //
 // Change Profile avatar //
 //********************** //
-function editAvatar(){
+function initEditAvatae(){
   const editProfileAvatarButton = document.querySelector('.profile__image');
   const popupEditAvatar = document.querySelector('.popup_type_change-avatar');
   const popupEditAvatarCloseButton = document.forms['new-avatar'].parentElement.querySelector('.popup__close');
@@ -157,7 +154,7 @@ function editAvatar(){
   // Function resolving submit
   function handleEditAvatarFormSubmit(evt) {
     evt.preventDefault();
-    let initialButtonText = popupEditAvatarSubmitButton.textContent;
+    const initialButtonText = popupEditAvatarSubmitButton.textContent;
     popupEditAvatarSubmitButton.textContent = textForButtonWhileSaving;
     const newAvatar = popupEditAvatarLink.value
     updateMyProfileAvatar(newAvatar)
@@ -165,17 +162,17 @@ function editAvatar(){
       editProfileAvatarButton.style.backgroundImage = `url('${result.avatar}')`;
       // close popup
       closeModal(popupEditAvatar);
-      popupEditAvatarSubmitButton.textContent = initialButtonText;
       popupEditAvatarForm.reset();
       clearValidation(popupEditAvatarForm, configObject);
     })
     .catch((err) => {
       console.log(err);
-    });
+    })
+    .finally(() => popupEditAvatarSubmitButton.textContent = initialButtonText);
   };
   
 }
-editAvatar();
+initEditAvatae();
 
 //*********** //
 // Validation //
@@ -185,8 +182,8 @@ enableValidation(configObject);
 //********************************** //
 // Load Card and profile drom server //
 //********************************** //
-ShowProfileFromServer();
-function ShowProfileFromServer() {
+showProfileFromServer();
+function showProfileFromServer() {
   getMyProfile()
   .then((result) => {
     setMyProfileFromServer(result)
@@ -204,35 +201,17 @@ function setMyProfileFromServer(profile){
   profileDescription.textContent = profile.about;
 
 }
-function changeProfileTextOnServer(profileData){
-  console.log(profileData);
-  // now u send data to server and update profile on main web page from inputs
-  updateMyProfileText(profileData)
-    // this comment sends data to server and uses it's response to set profile data on page
-    /*.then((result) => {
-      setMyProfileFromServer(result);
-    })*/
-    .catch((err) => {
-      console.log(err);
-    });
-}
-function setCards(cardsArray, MyId){
+function setCards(cardsArray, myId){
   cardsArray.forEach((data) => {
-    const card = createCard(data, delItemFunction, likeFunction, showCardImageFunction, MyId);
+    const card = createCard(data, delItemFunction, likeFunction, showCardImageFunction, myId);
     cardsContainer.append(card);
   });
 };
 const loadUserAndCards = [getInitialCards(), getMyProfile()];
 Promise.all(loadUserAndCards)
-  .then(([CardsArray, MyProfile]) => {
-    console.log("====");
-    console.log(CardsArray);
-    console.log("====");
-    console.log(MyProfile);
-    console.log("====");
-    const MyId = MyProfile._id;
-    console.log(MyId);
-    setCards(CardsArray, MyId);
+  .then(([cardsArray, myProfile]) => {
+    const myId = myProfile._id;
+    setCards(cardsArray, myId);
   })
   .catch((err) => {
     console.log(err);

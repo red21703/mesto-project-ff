@@ -10,15 +10,10 @@ let mainSettingsObject = '';
 
 // show Error
 const showInputError = (formElement, inputElement, errorMessage) => {
-  console.log(`errorMessage: ${errorMessage}`);
-  console.log('formElement');
-  console.log(formElement);
-  console.log('inputElement');
-  console.log(inputElement);
   let formError = formElement.querySelector(`.${inputElement.id}-error`);
   formError.textContent = errorMessage;
   formError.classList.add(mainSettingsObject.errorClass);
-  //inputElement.classList.add(mainSettingsObject.inputErrorClass);
+  inputElement.classList.add(mainSettingsObject.inputErrorClass);
 };
 
 //hide Error
@@ -39,17 +34,15 @@ const isValid = (formElement, inputElement) => {
   }
   if (!inputElement.validity.valid) {
     showInputError(formElement, inputElement, inputElement.validationMessage);
-    inputElement.classList.add(mainSettingsObject.inputErrorClass);
   } else {
     hideInputError(formElement, inputElement);
   }
 };
 
-// If one from all input in form is invalid then disables submit button
+// If one from all inputs in form is invalid then disables submit button
 const toggleButtonState = (inputList, buttonElement) => {
   if (hasInvalidInput(inputList)) {
-    buttonElement.disabled = true;
-    buttonElement.classList.add(mainSettingsObject.inactiveButtonClass);
+    disableSubmitButton(buttonElement);
   } 
   else {
     buttonElement.disabled = false;
@@ -91,9 +84,14 @@ export function enableValidation(settingsObject){
 export function clearValidation(profileForm, validationConfig){
   const inputList = Array.from(profileForm.querySelectorAll(validationConfig.inputSelector)); // get array of inputs in form
   const buttonElement = profileForm.querySelector(validationConfig.submitButtonSelector); // get submit button
-  buttonElement.disabled = true;
-  buttonElement.classList.add(validationConfig.inactiveButtonClass)
+  disableSubmitButton(buttonElement);
   inputList.forEach((inputElement) => {
     hideInputError(profileForm, inputElement);
   });
 };
+
+
+const disableSubmitButton = (button) => {
+  button.disabled = true;
+  button.classList.add(mainSettingsObject.inactiveButtonClass);
+}
